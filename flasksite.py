@@ -33,11 +33,11 @@ class ClosedAcess(Resource):
 
 
 api.add_resource(MainPage, '/')
-api.add_resource(GetUser, '/getuser/<int: id>' )
-api.add_resource(ChangeInvites, '/change_invites/<int: id>/<int: count>')
-api.add_resource(Ban, '/ban/<str: invite>')
+api.add_resource(GetUser, '/getuser/<int:id>' )
+api.add_resource(ChangeInvites, '/change_invites/<int:id>/<int:count>')
+api.add_resource(Ban, '/ban/<string:invite>')
 api.add_resource(Invites, '/invites')
-api.add_resource(ClosedAcess, '/closed_acess/<str: token>')
+api.add_resource(ClosedAcess, '/closed_acess/<string:token>')
 
 
 if __name__ == '__main__':

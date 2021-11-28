@@ -1,12 +1,13 @@
 from sqlalchemy import create_engine, MetaData, Table, Integer, String, Column, ForeignKeyConstraint, ForeignKey, Boolean
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from datetime import datetime
+from datetime import datetime, date
 
 from sqlalchemy.sql.schema import PrimaryKeyConstraint
 import random
-from token import correcttoken
+
 from telebot.types import InputInvoiceMessageContent
+from config import correct_token
 
 engine = create_engine('sqlite:///thedb.db?check_same_thread=False')
 engine.connect()
@@ -107,9 +108,10 @@ def get_user_profiles():
     for element in users:
         arr.append({'picture': session.query(Users.photo).filter(Users.id == element[0]).first()[0], 'name': session.query(Users.name).filter(Users.id == element[0]).first()[0], "age": session.query(Users.age).filter(Users.id == element[0]).first()[0], "joined_at": session.query(Users.reg_time).filter(Users.id == element[0]).first()[0], 'inspection_id': session.query(Users.inspection).filter(Users.id == element[0]).first()[0], "inviter_name": session.query(Invites.createdby).filter(Invites.usedby == element[0]).first()[0]})
         datetime_string = session.query(Users.reg_time).filter(Users.id == element[0]).first()[0][0:-7]
-        datetime_obj = datetime.strptime(datetime_string, '%m-%d-%y %H:%M:%S').date()
-        if datetime.date() - datetime_obj > 30:
-            date_arr[datetime.date() - datetime_obj] = date_arr[datetime.date() - datetime_obj] + 1
+        datetime_obj = datetime.strptime(datetime_string, '%Y-%m-%d %H:%M:%S').date()
+        delt = int(str(datetime.now().date() - datetime_obj)[0:1])
+        if delt > 30:
+            date_arr[30 - delt] = date_arr[30 - delt] + 1
     return {
         "newuserstate": date_arr,
         "newmessagestate": message_date_arr,
@@ -167,8 +169,8 @@ def invites_str():
 
 def closed_acess(token):
     global correct_token
-    if correcttoken == token:
-        
+    if correct_token == token:
+
         return {'is_correct': True}
     else:
         return {'is_correct': False}
